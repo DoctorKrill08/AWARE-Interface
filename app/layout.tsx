@@ -86,6 +86,8 @@ export default function RobotControlPanel() {
   };
 
    const handleJoystickUpdate = (x: number, y: number) => {
+    x = Math.pow(x,3)
+    y = Math.pow(y,3)
     console.log("Joystick:", x, y);
     sendCommand("JOYSTICK",`${x},${y}`)
   };
