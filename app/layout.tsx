@@ -1,6 +1,7 @@
 'use client'
 import React, { useEffect, useRef, useState } from "react";
 import './globals.css'
+import Joystick from './joystick'
 
 
 type TelemetryData = {
@@ -9,6 +10,8 @@ type TelemetryData = {
   longitude: number;
   latitude: number;
   heading: number;
+  arduino_connected: boolean;
+  gamepad_connected: boolean;
   status: string;
 };
 
@@ -19,6 +22,8 @@ export default function RobotControlPanel() {
     longitude: 0,
     latitude: 0,
     heading: 0,
+    arduino_connected: false,
+    gamepad_connected: false,
     status: "Disconnected",
   });
 
@@ -27,7 +32,7 @@ export default function RobotControlPanel() {
   const socketRef = useRef<WebSocket | null>(null);
 
   useEffect(() => {
-    const socket = new WebSocket("ws://10.54.132.29:8000/ws");
+    const socket = new WebSocket("ws://10.54.132.19:8000/ws");
 
     socketRef.current = socket;
 
@@ -47,7 +52,6 @@ export default function RobotControlPanel() {
 
     socket.onmessage = (event) => {
       const data = JSON.parse(event.data);
-
       if (data.type === "telemetry") {
         setTelemetry({
           mode: data.mode,
@@ -55,6 +59,8 @@ export default function RobotControlPanel() {
           longitude: data.longitude,
           latitude: data.latitude,
           heading: data.heading,
+          arduino_connected: data.arduino_connected,
+          gamepad_connected: data.gamepad_connected,
           status: data.status,
         });
       }
@@ -65,7 +71,7 @@ export default function RobotControlPanel() {
     };
   }, []);
 
-  const sendCommand = (command: string) => {
+  const sendCommand = (request: string, values: string) => {
     if (!socketRef.current || socketRef.current.readyState !== WebSocket.OPEN) {
       console.warn("Socket not connected");
       return;
@@ -73,12 +79,18 @@ export default function RobotControlPanel() {
 
     socketRef.current.send(
       JSON.stringify({
-        type: "command",
-        command: command,
+        request: request,
+        values: values,
       })
     );
   };
 
+  const [joystickTriggered, setJoyStickTriggered] = useState({x: 0, y: 0});
+
+  const handleJoystickEvent = () => {
+    setJoyStickTriggered(true);
+  };
+  
 
   return (
     <html>
@@ -90,8 +102,18 @@ export default function RobotControlPanel() {
             <h2>Telemetry</h2>
 
             <div>
-              <strong>Connection:</strong>{" "}
-              {connected ? "Connected" : "Disconnected"}
+              <strong>Client Connected:</strong>{" "}
+              {connected ? "True" : "False"}
+            </div>
+
+             <div>
+              <strong>Arduino Connected:</strong> {" "}
+              {telemetry.arduino_connected ? "True" : "False"}
+            </div>
+
+             <div>
+              <strong>Gamepad Connected:</strong> {" "}
+              {telemetry.gamepad_connected ? "True" : "False"}
             </div>
 
             <div>
@@ -124,23 +146,28 @@ export default function RobotControlPanel() {
             <h2>Command</h2>
 
             <div>
-              <button onClick={() => sendCommand("OFF")}>
+              <button onClick={() => sendCommand("OFF","")}>
                 Off
               </button>
-              <button onClick={() => sendCommand("RESTING")}>
+              <button onClick={() => sendCommand("ON","")}>
+                On
+              </button>
+              <button onClick={() => sendCommand("SET_STATE","RESTING")}>
                 Resting
               </button>
 
-              <button onClick={() => sendCommand("GAMEPAD")}>
-                Manual
+              <button onClick={() => sendCommand("SET_STATE","GAMEPAD")}>
+                Gamepad
               </button>
 
-              <button onClick={() => sendCommand("AUTONOMOUS")}>
+              <button onClick={() => sendCommand("SET_STATE","AUTONOMOUS")}>
                 Autonomous
               </button>
             </div>
-          </div>
 
+            <Joystick onTrigger={sendCommand}/>
+
+          </div>
         </div>
       </body>
     </html>
