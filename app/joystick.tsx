@@ -2,7 +2,11 @@
 
 import React, { useRef, useState } from 'react';
 
-export default function Joystick({onTrigger}) {
+type JoystickProps = {
+  onMove: (x: number, y: number) => void;
+};
+
+export default function Joystick({ onMove }: JoystickProps) {
   const joystickRef = useRef<HTMLDivElement>(null);
 
   const [position, setPosition] = useState({ x: 0, y: 0 });
@@ -43,6 +47,8 @@ export default function Joystick({onTrigger}) {
       x: normalizedX.toFixed(2),
       y: normalizedY.toFixed(2),
     });
+
+    onMove(normalizedX, normalizedY);
     
   };
 
@@ -62,6 +68,7 @@ export default function Joystick({onTrigger}) {
 
     // Return to center
     setPosition({ x: 0, y: 0 });
+    onMove(0, 0);
   };
 
   const handleTouchStart = (event: React.TouchEvent) => {
@@ -81,6 +88,7 @@ export default function Joystick({onTrigger}) {
   const handleTouchEnd = () => {
     setDragging(false);
     setPosition({ x: 0, y: 0 });
+    onMove(0, 0);
   };
 
   return (

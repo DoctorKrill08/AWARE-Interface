@@ -85,12 +85,11 @@ export default function RobotControlPanel() {
     );
   };
 
-  const [joystickTriggered, setJoyStickTriggered] = useState({x: 0, y: 0});
-
-  const handleJoystickEvent = () => {
-    setJoyStickTriggered(true);
+   const handleJoystickUpdate = (x: number, y: number) => {
+    console.log("Joystick:", x, y);
+    sendCommand("JOYSTICK",`${x},${y}`)
   };
-  
+
 
   return (
     <html>
@@ -165,7 +164,7 @@ export default function RobotControlPanel() {
               </button>
             </div>
 
-            <Joystick onTrigger={sendCommand}/>
+            <Joystick onMove={handleJoystickUpdate}/>
 
           </div>
         </div>
