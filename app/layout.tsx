@@ -32,7 +32,7 @@ export default function RobotControlPanel() {
   const socketRef = useRef<WebSocket | null>(null);
 
   useEffect(() => {
-    const socket = new WebSocket("ws://10.54.132.19:8000/ws");
+    const socket = new WebSocket("ws://172.17.0.1:8000/ws");
 
     socketRef.current = socket;
 
