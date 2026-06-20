@@ -147,21 +147,21 @@ export default function RobotControlPanel() {
             <h2>Command</h2>
 
             <div>
-              <button onClick={() => sendCommand("OFF","")}>
+              <button className="off-button" onClick={() => sendCommand("OFF","")}>
                 Off
               </button>
-              <button onClick={() => sendCommand("ON","")}>
+              <button className="on-button" onClick={() => sendCommand("ON","")}>
                 On
               </button>
-              <button onClick={() => sendCommand("SET_STATE","RESTING")}>
+              <button className="button" onClick={() => sendCommand("SET_STATE","RESTING")}>
                 Resting
               </button>
 
-              <button onClick={() => sendCommand("SET_STATE","GAMEPAD")}>
+              <button className="button" onClick={() => sendCommand("SET_STATE","GAMEPAD")}>
                 Gamepad
               </button>
 
-              <button onClick={() => sendCommand("SET_STATE","AUTONOMOUS")}>
+              <button className="button" onClick={() => sendCommand("SET_STATE","AUTONOMOUS")}>
                 Autonomous
               </button>
             </div>

@@ -23,3 +23,27 @@ body {
   color: white;
   font-family: "Courier New"
 }
+
+.button {
+  min-width: 50px;
+  min-height: 50px;
+  background-color: black;
+  border-color: white;
+  color: white;
+}
+.off-button{
+  min-width: 100px;
+  min-height: 50px;
+  border-width: 5;
+  color: red;
+  border-color: rgb(255, 0, 0);
+  background-color: black;
+}
+.on-button{
+  min-width: 50px;
+  min-height: 50px;
+  border-width: 5;
+  color: rgb(0, 255, 0);
+  border-color: rgb(0, 255, 0);
+  background-color: black;
+}
